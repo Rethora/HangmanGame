@@ -4,8 +4,11 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.awt.BorderLayout;
+import java.awt.Dimension;
 import java.util.ArrayList;
 
+import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
@@ -25,6 +28,7 @@ public class GUI extends JFrame
     private JPanel playerWonPanel;
     private JPanel playerLostPanel;
     private StickFigure stickFigure;
+    private final double ASSET_ASPECT_RATIO = 0.27;
 
     public GUI()
     {
@@ -44,20 +48,6 @@ public class GUI extends JFrame
 
         add(difficultyPanel);
 
-        JButton button = new JButton("Start");
-        difficultyPanel.add(button);
-
-        button.addActionListener(new ActionListener()
-        {
-
-            @Override
-            public void actionPerformed(ActionEvent e)
-            {
-                startGame();
-            }
-
-        });
-
         difficultyPanel.setVisible(true);
         setVisible(true);
         stickFigure.reset();
@@ -70,14 +60,30 @@ public class GUI extends JFrame
 
     private JPanel getNewDifficultyPanel()
     {
-        JPanel panel = new JPanel();
+        JPanel panel = new JPanel(new BorderLayout());
+        panel.setBorder(BorderFactory.createEmptyBorder(100, 100, 100, 100));
 
+        JPanel directionsPanel = new JPanel();
+
+        JLabel howToPlayLabel = new JLabel(
+                "<html><p>How to Play:</p><p>You will be given a random word to guess.</p><p>Options include letters a to z, no special characters or spaces.</p><p>As difficulty increases, the words will get harder and you will get less tries.</p>Good luck!</html>");
+        howToPlayLabel.setHorizontalAlignment(JLabel.CENTER);
+
+        directionsPanel.add(howToPlayLabel);
+
+        panel.add(howToPlayLabel, BorderLayout.NORTH);
+
+        JPanel selectionPanel = new JPanel();
         JLabel label = new JLabel("Choose difficulty:");
-        panel.add(label);
+        label.setHorizontalAlignment(JLabel.CENTER);
+        selectionPanel.add(label);
 
         Difficulty[] options = Difficulty.values();
         JComboBox<Difficulty> comboBox = new JComboBox<Difficulty>(options);
-        panel.add(comboBox);
+
+        selectionPanel.setAlignmentY(CENTER_ALIGNMENT);
+
+        selectionPanel.add(comboBox, BorderLayout.CENTER);
 
         comboBox.addActionListener(new ActionListener()
         {
@@ -87,6 +93,23 @@ public class GUI extends JFrame
             {
                 selectedDifficulty = (Difficulty) comboBox.getSelectedItem();
             }
+        });
+        panel.add(selectionPanel);
+
+        JPanel buttonPanel = new JPanel();
+        JButton button = new JButton("Start");
+        buttonPanel.add(button);
+        panel.add(buttonPanel, BorderLayout.SOUTH);
+
+        button.addActionListener(new ActionListener()
+        {
+
+            @Override
+            public void actionPerformed(ActionEvent e)
+            {
+                startGame();
+            }
+
         });
 
         return panel;
@@ -112,19 +135,23 @@ public class GUI extends JFrame
 
     private JPanel getWrongGuessesPanel()
     {
-        JPanel panel = new JPanel();
+        JPanel panel = new JPanel(new GridLayout(2, 0));
         ArrayList<Character> wrongGuesses = hangmanGame.getWrongGuesses();
 
-        panel.setLayout(new GridLayout(0, wrongGuesses.size() + 1));
         JLabel label = new JLabel("Wrong guesses: ");
+        label.setHorizontalAlignment(JLabel.CENTER);
         panel.add(label);
+
+        JPanel wrongLettersPanel = new JPanel(
+                new GridLayout(0, wrongGuesses.size() | 1));
 
         for (char c : wrongGuesses)
         {
             JLabel charLabel = new JLabel(Character.toString(c));
-            panel.add(charLabel);
+            wrongLettersPanel.add(charLabel);
         }
 
+        panel.add(wrongLettersPanel);
         return panel;
     }
 
@@ -151,8 +178,10 @@ public class GUI extends JFrame
         JLabel label = new JLabel();
         label.setIcon(new ImageIcon(
                 new ImageIcon(stickFigure.getCurrentSequencePath().toString())
-                        .getImage()
-                        .getScaledInstance(100, 150, Image.SCALE_SMOOTH)));
+                        .getImage().getScaledInstance(
+                                (int) (StickFigure.WIDTH * ASSET_ASPECT_RATIO),
+                                (int) (StickFigure.HEIGHT * ASSET_ASPECT_RATIO),
+                                Image.SCALE_SMOOTH)));
         panel.add(label);
         return panel;
     }
@@ -244,44 +273,49 @@ public class GUI extends JFrame
     private JPanel getGamePanel()
     {
         JPanel gamePanel = new JPanel();
-        gamePanel.setLayout(new GridLayout(5, 0));
+        gamePanel.setLayout(new BorderLayout());
+        gamePanel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
 
+        JPanel northPanel = new JPanel();
         gameInfoPanel = getGameInfoPanel();
-        gameInfoPanel.setVisible(true);
-        gamePanel.add(gameInfoPanel);
+        northPanel.add(gameInfoPanel);
+        gamePanel.add(northPanel, BorderLayout.NORTH);
 
+        JPanel centerPanel = new JPanel(new GridLayout(3, 0));
         JPanel wrongGuessesPanel = getWrongGuessesPanel();
-        wrongGuessesPanel.setVisible(true);
-        gamePanel.add(wrongGuessesPanel);
-
-        JPanel currentGuessPanel = getCurrentGuessPanel();
-        currentGuessPanel.setVisible(true);
-        gamePanel.add(currentGuessPanel);
+        centerPanel.add(wrongGuessesPanel);
 
         JPanel hangmanArtPanel = getHangmanArtPanel();
-        hangmanArtPanel.setVisible(true);
-        gamePanel.add(hangmanArtPanel);
 
+        centerPanel.add(hangmanArtPanel);
+
+        JPanel currentGuessPanel = getCurrentGuessPanel();
+        centerPanel.add(currentGuessPanel);
+        gamePanel.add(centerPanel, BorderLayout.CENTER);
+
+        JPanel southPanel = new JPanel();
         JPanel guesserPanel = getGuesserPanel();
-        guesserPanel.setVisible(true);
-        gamePanel.add(guesserPanel);
+        southPanel.add(guesserPanel);
 
+        gamePanel.add(southPanel, BorderLayout.SOUTH);
         return gamePanel;
     }
 
     private JPanel getPlayerWonPanel()
     {
         JPanel panel = new JPanel();
-        panel.setLayout(new GridLayout(2, 0));
-
+        panel.setLayout(new BorderLayout());
+        panel.setBorder(BorderFactory.createEmptyBorder(200, 200, 200, 200));
         JLabel label = new JLabel("YOU WON with "
                 + Integer.toString(hangmanGame.getAttemptsLeft())
                 + " tries left! The word was " + hangmanGame.getWordToGuess()
                 + ".");
         label.setHorizontalAlignment(JLabel.CENTER);
-        panel.add(label);
+        panel.add(label, BorderLayout.NORTH);
 
         JButton button = new JButton("New Game");
+        button.setPreferredSize(new Dimension(300, 40));
+
         button.addActionListener(new ActionListener()
         {
 
@@ -293,7 +327,7 @@ public class GUI extends JFrame
                 revalidate();
             }
         });
-        panel.add(button);
+        panel.add(button, BorderLayout.SOUTH);
 
         return panel;
     }
@@ -301,14 +335,17 @@ public class GUI extends JFrame
     private JPanel getPlayerLostPanel()
     {
         JPanel panel = new JPanel();
-        panel.setLayout(new GridLayout(2, 0));
+        panel.setLayout(new BorderLayout());
+        panel.setBorder(BorderFactory.createEmptyBorder(200, 200, 200, 200));
 
         JLabel label = new JLabel(
-                "YOU LOST! the word was " + hangmanGame.getWordToGuess() + ".");
+                "YOU LOST! The word was " + hangmanGame.getWordToGuess() + ".");
         label.setHorizontalAlignment(JLabel.CENTER);
-        panel.add(label);
+        panel.add(label, BorderLayout.NORTH);
 
         JButton button = new JButton("New Game");
+        button.setPreferredSize(new Dimension(300, 40));
+
         button.addActionListener(new ActionListener()
         {
 
@@ -320,7 +357,7 @@ public class GUI extends JFrame
                 revalidate();
             }
         });
-        panel.add(button);
+        panel.add(button, BorderLayout.SOUTH);
 
         return panel;
     }
