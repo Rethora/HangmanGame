@@ -4,6 +4,8 @@ import java.nio.file.Paths;
 public class StickFigure
 {
     private final Path ASSETS_PATH = Paths.get("src", "assets", "stickfigure");
+    public static final int HEIGHT = 792;
+    public static final int WIDTH = 612;
     private int sequence = 0;
 
     public Path getNextSequencePath()
