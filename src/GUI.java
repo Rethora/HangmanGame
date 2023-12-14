@@ -18,6 +18,10 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
 
+/**
+ * This class represents the graphical user interface for a Hangman game.
+ * It extends JFrame to create the game window.
+ */
 public class GUI extends JFrame
 {
     private Difficulty selectedDifficulty;
@@ -39,6 +43,10 @@ public class GUI extends JFrame
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     }
 
+    /**
+     * Initializes a new a game by starting at the choose difficulty page and
+     * resetting the stick figure art
+     */
     private void initialize()
     {
         difficultyPanel = getNewDifficultyPanel();
@@ -53,11 +61,19 @@ public class GUI extends JFrame
         stickFigure.reset();
     }
 
+    /**
+     * Opens the GUI and initializes a new game
+     */
     public void open()
     {
         initialize();
     }
 
+    /**
+     * Gets the difficulty selection panel which includes the how to play text
+     * 
+     * @return the difficulty panel
+     */
     private JPanel getNewDifficultyPanel()
     {
         JPanel panel = new JPanel(new BorderLayout());
@@ -115,6 +131,10 @@ public class GUI extends JFrame
         return panel;
     }
 
+    /**
+     * Gets the game info panel with current difficulty and lives left
+     * @ return the game info game panel
+     */
     private JPanel getGameInfoPanel()
     {
         JPanel panel = new JPanel();
@@ -133,6 +153,11 @@ public class GUI extends JFrame
         return panel;
     }
 
+    /**
+     * Gets the panel that displays the wrong letters guessed
+     * 
+     * @return the JPanel with the current wrong guesses
+     */
     private JPanel getWrongGuessesPanel()
     {
         JPanel panel = new JPanel(new GridLayout(2, 0));
@@ -155,6 +180,12 @@ public class GUI extends JFrame
         return panel;
     }
 
+    /**
+     * Gets the panel that displays letters guessed and blank slots that still
+     * need to be guessed
+     * 
+     * @return the JPanel that displays the current guess
+     */
     private JPanel getCurrentGuessPanel()
     {
         JPanel panel = new JPanel();
@@ -171,6 +202,11 @@ public class GUI extends JFrame
         return panel;
     }
 
+    /**
+     * Gets the panel that displays the hangman art figure
+     * 
+     * @return the JPanel that has the hangman stick figure image
+     */
     private JPanel getHangmanArtPanel()
     {
         JPanel panel = new JPanel();
@@ -186,6 +222,12 @@ public class GUI extends JFrame
         return panel;
     }
 
+    /**
+     * Gets the panel that allows the player to guess a letter
+     * 
+     * @return the JPanel that contains the text field for the player to guess a
+     *         letter
+     */
     private JPanel getGuesserPanel()
     {
         JPanel panel = new JPanel();
@@ -270,6 +312,12 @@ public class GUI extends JFrame
         return panel;
     }
 
+    /**
+     * Gets the entire game panel with all components that make up the actual
+     * game
+     * 
+     * @return the JPanel that is used for the main game logic
+     */
     private JPanel getGamePanel()
     {
         JPanel gamePanel = new JPanel();
@@ -301,6 +349,11 @@ public class GUI extends JFrame
         return gamePanel;
     }
 
+    /**
+     * Gets the panel that is displayed when a user wins
+     * 
+     * @return the JPanel that is used when a player wins a game
+     */
     private JPanel getPlayerWonPanel()
     {
         JPanel panel = new JPanel();
@@ -332,6 +385,11 @@ public class GUI extends JFrame
         return panel;
     }
 
+    /**
+     * Gets the panel that is displayed when a player loses the game
+     * 
+     * @return the JPanel that is used when the player loses
+     */
     private JPanel getPlayerLostPanel()
     {
         JPanel panel = new JPanel();
@@ -362,6 +420,10 @@ public class GUI extends JFrame
         return panel;
     }
 
+    /**
+     * Handles the start of the game by instantiating the appropriate hangman
+     * game by chosen difficulty
+     */
     private void startGame()
     {
         switch (selectedDifficulty)
@@ -387,6 +449,9 @@ public class GUI extends JFrame
         revalidate();
     }
 
+    /**
+     * Repaints the game panel
+     */
     private void rePaintGamePanel()
     {
         gamePanel.removeAll();
